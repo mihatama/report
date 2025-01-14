@@ -1,17 +1,25 @@
-/**
- * BreastDrawingKonva.js
- *
- * react-konva を用いて「乳房の円」上にフリーハンドで描画できるコンポーネント例
- */
-
 import React, { useState, useRef } from 'react';
 import { Stage, Layer, Circle, Line, Text } from 'react-konva';
 import { Box, Button } from '@mui/material';
 
-function BreastDrawingKonva() {
+/**
+ * react-konva で乳房イメージ円にフリーハンド描画できるコンポーネント
+ * 
+ * @param {Object} props
+ * @param {string} props.label  - 右乳房か左乳房かなどのテキスト表示用
+ * @param {number} [props.width=300]  - コンポーネントの幅
+ * @param {number} [props.height=300] - コンポーネントの高さ
+ * @param {number} [props.circleRadius=100] - 円の半径
+ */
+function BreastDrawingKonva({
+  label = '乳房',
+  width = 300,
+  height = 300,
+  circleRadius = 100,
+}) {
   // 描いた線（Line）の配列をステート管理
   const [lines, setLines] = useState([]);
-  // ドラッグしている最中かどうかのフラグ
+  // ドラッグしている最中かどうか
   const isDrawing = useRef(false);
   // Stage の参照
   const stageRef = useRef(null);
@@ -19,28 +27,20 @@ function BreastDrawingKonva() {
   // マウス/タッチ押下時
   const handleMouseDown = (e) => {
     isDrawing.current = true;
-    // 現在のステージ上のポインター座標を取得
     const pos = e.target.getStage().getPointerPosition();
-    // 新しい線を追加
     setLines((prevLines) => [...prevLines, { points: [pos.x, pos.y] }]);
   };
 
   // マウス/タッチ移動時
   const handleMouseMove = (e) => {
-    if (!isDrawing.current) return; // 描画中でなければ無視
-
+    if (!isDrawing.current) return;
     const stage = e.target.getStage();
     const point = stage.getPointerPosition();
-    // 現在の線（最後の線）を取り出し、移動先座標を追加
     setLines((prevLines) => {
       const lastLine = prevLines[prevLines.length - 1];
       const newPoints = [...lastLine.points, point.x, point.y];
-
-      // 最後の線だけ座標を更新
       const updatedLine = { ...lastLine, points: newPoints };
-      // それ以外の線はそのまま
-      const newLines = [...prevLines.slice(0, -1), updatedLine];
-      return newLines;
+      return [...prevLines.slice(0, -1), updatedLine];
     });
   };
 
@@ -54,63 +54,86 @@ function BreastDrawingKonva() {
     setLines([]);
   };
 
-  // 保存ボタン（JSON などに変換してバックエンド保存も可能）
+  // 保存（例: JSON で console.log）
   const handleSave = () => {
     const dataToSave = JSON.stringify(lines);
-    console.log('描画データ:', dataToSave);
-    // 例: localStorage に保存
-    // localStorage.setItem('breastDrawing', dataToSave);
-    // あるいは GraphQL Mutation で保存など
+    console.log(`${label} の描画データ:`, dataToSave);
+    // 例: localStorage へ保存
+    // localStorage.setItem(`${label}-breastDrawing`, dataToSave);
+    // またはバックエンドへ送信など
   };
 
-  // （オプション）ロードボタン例
+  // （例）ロードボタン
   const handleLoad = () => {
-    // localStorage から読み出したり、バックエンドから取得して parse してセット
-    // const loaded = localStorage.getItem('breastDrawing');
+    // もし localStorage などから読み込む場合はここで parse して setLines
+    // const loaded = localStorage.getItem(`${label}-breastDrawing`);
     // if (loaded) {
     //   setLines(JSON.parse(loaded));
     // }
   };
 
   return (
-    <Box sx={{ mb: 4 }}>
-      <h3>react-konva で乳房図にフリーハンド描画</h3>
+    <Box sx={{ mb: 2 }}>
+      <h4 style={{ textAlign: 'center' }}>{label}</h4>
 
-      {/* Stage: 描画領域全体 */}
       <Stage
         ref={stageRef}
-        width={400}      // Canvas 幅
-        height={400}     // Canvas 高さ
+        width={width}
+        height={height}
         onMouseDown={handleMouseDown}
         onMousemove={handleMouseMove}
         onMouseup={handleMouseUp}
         onTouchStart={handleMouseDown}
         onTouchMove={handleMouseMove}
         onTouchEnd={handleMouseUp}
-        style={{ border: '1px solid #ccc' }}
+        style={{ border: '1px solid #aaa', borderRadius: '4px' }}
       >
         <Layer>
-          {/* 円（乳房イメージとしての背景） */}
+          {/* 円（乳房イメージ） */}
           <Circle
-            x={200}          // Canvas中央に配置
-            y={200}
-            radius={150}     // 円の半径
-            fill="#f8f8f8"   // 円の背景色
-            stroke="#aaa"    // 円の枠線
+            x={width / 2}
+            y={height / 2}
+            radius={circleRadius}
+            fill="#f8f8f8"
+            stroke="#666"
             strokeWidth={2}
           />
-          {/* 例: 12,3,6,9 時の目盛り用テキスト (任意に追加) */}
-          <Text x={195} y={50}  text="12" fontSize={20} fill="#000" />
-          <Text x={345} y={195} text="3"  fontSize={20} fill="#000" />
-          <Text x={195} y={345} text="6"  fontSize={20} fill="#000" />
-          <Text x={50}  y={195} text="9"  fontSize={20} fill="#000" />
+          {/* 12, 3, 6, 9 の文字 */}
+          <Text
+            x={width / 2 - 10}
+            y={height / 2 - circleRadius - 20}
+            text="12"
+            fontSize={16}
+            fill="#000"
+          />
+          <Text
+            x={width / 2 + circleRadius + 5}
+            y={height / 2 - 10}
+            text="3"
+            fontSize={16}
+            fill="#000"
+          />
+          <Text
+            x={width / 2 - 10}
+            y={height / 2 + circleRadius + 5}
+            text="6"
+            fontSize={16}
+            fill="#000"
+          />
+          <Text
+            x={width / 2 - circleRadius - 20}
+            y={height / 2 - 10}
+            text="9"
+            fontSize={16}
+            fill="#000"
+          />
 
-          {/* 描いた線を表示 (Line) */}
+          {/* 描いた線たち */}
           {lines.map((line, i) => (
             <Line
               key={i}
               points={line.points}
-              stroke="#FF0000"
+              stroke="red"
               strokeWidth={3}
               lineCap="round"
               lineJoin="round"
@@ -120,11 +143,12 @@ function BreastDrawingKonva() {
         </Layer>
       </Stage>
 
-      <Box sx={{ mt: 1 }}>
-        <Button variant="contained" onClick={handleSave} sx={{ mr: 2 }}>
-          描画内容を保存
+      {/* ボタン類 */}
+      <Box sx={{ mt: 1, textAlign: 'center' }}>
+        <Button variant="contained" onClick={handleSave} sx={{ mr: 1 }}>
+          保存
         </Button>
-        <Button variant="outlined" onClick={handleClear} sx={{ mr: 2 }}>
+        <Button variant="outlined" onClick={handleClear} sx={{ mr: 1 }}>
           クリア
         </Button>
         <Button variant="outlined" onClick={handleLoad}>

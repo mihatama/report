@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import BreastDrawingKonva from './BreastDrawingKonva';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ function App() {
     bowelMovements: '',
     urineFrequency: '',
     childDevelopment: '',
-    // 右・左乳房円
+    // 右・左乳房のテキスト (時刻表現のみ)
     rightBreastClock: '',
     leftBreastClock: '',
     // チェックボックス類
@@ -59,6 +59,7 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     alert('送信しました（デモ）');
+    console.log('現在のフォームデータ: ', formData);
   };
 
   return (
@@ -91,7 +92,10 @@ function App() {
                   </div>
                 </div>
               </td>
-              <td colSpan={2} style={{ borderLeft: '1px solid #333', padding: '4px', verticalAlign: 'top' }}>
+              <td
+                colSpan={2}
+                style={{ borderLeft: '1px solid #333', padding: '4px', verticalAlign: 'top' }}
+              >
                 <label>担当者名:</label>
                 <input
                   style={{ marginLeft: '8px' }}
@@ -237,7 +241,10 @@ function App() {
 
             {/* 母乳やミルク、離乳食、便尿回数等 */}
             <tr>
-              <td colSpan={3} style={{ verticalAlign: 'top', borderRight: '1px solid #333' }}>
+              <td
+                colSpan={3}
+                style={{ verticalAlign: 'top', borderRight: '1px solid #333' }}
+              >
                 {/* 左側: 母乳・ミルク関連 */}
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <tbody>
@@ -355,135 +362,52 @@ function App() {
                 </table>
               </td>
 
-              {/* 右側: 乳房の円、チェックリストなど */}
+              {/* 右側: 乳房の円 + 乳房の形などのチェックリスト */}
               <td colSpan={2} style={{ verticalAlign: 'top' }}>
-                <div style={{ display: 'flex', gap: '12px' }}>
-                  {/* 右乳房と左乳房の円 */}
+                {/* ▼ ここをreact-konvaの描画コンポーネントに置き換え */}
+                <div style={{ display: 'flex', gap: '20px' }}>
+                  {/* 右乳房 */}
                   <div>
-                    <p style={{ textAlign: 'center' }}>右</p>
-                    <div
-                      style={{
-                        width: '100px',
-                        height: '100px',
-                        border: '1px solid #999',
-                        borderRadius: '50%',
-                        position: 'relative',
-                        marginBottom: '8px',
-                      }}
-                    >
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: 0,
-                          left: '45%',
-                        }}
-                      >
-                        12
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          bottom: 0,
-                          left: '45%',
-                        }}
-                      >
-                        6
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: '45%',
-                          left: 0,
-                        }}
-                      >
-                        9
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: '45%',
-                          right: 0,
-                        }}
-                      >
-                        3
-                      </span>
-                    </div>
+                    <BreastDrawingKonva
+                      label="右乳房"
+                      width={250}
+                      height={250}
+                      circleRadius={90}
+                    />
                     <input
                       placeholder="右乳房(時刻)の状態"
                       name="rightBreastClock"
                       value={formData.rightBreastClock}
                       onChange={handleChange}
-                      style={{ width: '120px' }}
+                      style={{ width: '200px', marginTop: '4px' }}
                     />
                   </div>
+                  {/* 左乳房 */}
                   <div>
-                    <p style={{ textAlign: 'center' }}>左</p>
-                    <div
-                      style={{
-                        width: '100px',
-                        height: '100px',
-                        border: '1px solid #999',
-                        borderRadius: '50%',
-                        position: 'relative',
-                        marginBottom: '8px',
-                      }}
-                    >
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: 0,
-                          left: '45%',
-                        }}
-                      >
-                        12
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          bottom: 0,
-                          left: '45%',
-                        }}
-                      >
-                        6
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: '45%',
-                          left: 0,
-                        }}
-                      >
-                        9
-                      </span>
-                      <span
-                        style={{
-                          position: 'absolute',
-                          fontSize: '12px',
-                          top: '45%',
-                          right: 0,
-                        }}
-                      >
-                        3
-                      </span>
-                    </div>
+                    <BreastDrawingKonva
+                      label="左乳房"
+                      width={250}
+                      height={250}
+                      circleRadius={90}
+                    />
                     <input
                       placeholder="左乳房(時刻)の状態"
                       name="leftBreastClock"
                       value={formData.leftBreastClock}
                       onChange={handleChange}
-                      style={{ width: '120px' }}
+                      style={{ width: '200px', marginTop: '4px' }}
                     />
                   </div>
                 </div>
 
-                <div style={{ marginTop: '12px', borderTop: '1px solid #aaa', paddingTop: '8px' }}>
+                {/* 乳房の形など */}
+                <div
+                  style={{
+                    marginTop: '12px',
+                    borderTop: '1px solid #aaa',
+                    paddingTop: '8px',
+                  }}
+                >
                   <label>
                     乳房の形：
                     <select
@@ -589,7 +513,9 @@ function App() {
               </td>
 
               {/* 乳房診断 + 支払いなど */}
-              <td style={{ verticalAlign: 'top', borderLeft: '1px solid #333', padding: '4px' }}>
+              <td
+                style={{ verticalAlign: 'top', borderLeft: '1px solid #333', padding: '4px' }}
+              >
                 <div>
                   <strong>【乳房診断】</strong>
                   <br />
