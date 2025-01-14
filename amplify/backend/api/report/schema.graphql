@@ -1,0 +1,45 @@
+type NursingCare @model {
+  id: ID!
+  no: String
+  date: AWSDate
+  timeSlot: String         # 例: "朝/昼/夜"など
+  location: String         # 例: "宝塚/西宮/名古屋..."など
+
+  # 乳房ケアデータ
+  motherMilkTimesPerDay: String  # 母乳回数/日 (朝,昼,夜など)
+  motherMilkInterval: String     # 母乳間隔
+  formulaFrequency: String       # ミルク回/日
+  formulaAmount: String          # ミルク量 (ml)
+  pumpedMilkFrequency: String    # 搾母乳回/日
+  pumpedMilkAmount: String       # 搾母乳量 (ml)
+  weaningFood: String            # 離乳食の硬さ、形状など
+  bowelMovements: String         # 便回数
+  urineFrequency: String         # 尿回数
+  childDevelopment: String       # 子の発達 (性状:硬・普通・軟等)
+
+  # 乳頭・乳輪状態
+  breastRightType: String        # 右乳房の状態 (I型、IIa型、IIb型、III型 など)
+  breastLeftType: String         # 左乳房の状態
+  nippleShieldUse: Boolean       # ニップルシールド使用有無
+  breastPumpUse: String          # 搾乳器の使用状況(手動/電動/回数 etc)
+  postpartumDay: String          # 産後何日目か
+  breastStatus: String           # 乳頭・乳輪の状態 (白斑/亀裂/発赤 など)
+  painStatus: String             # 疼痛 (乳輪痛・乳頭痛・乳房痛 など)
+  breastfeedingPosture: String   # 授乳姿勢
+  familySupport: String          # 家族などのサポート状況
+
+  # 卒乳/断乳の目安
+  weanDate: AWSDate
+
+  # S)主観, P)計画
+  sNote: String
+  pNote: String
+
+  # 乳房診断
+  breastDiagnosis: String        # #1 など
+  paymentMethod: String          # (カード, PayPay, 現金, 回数券等)
+  paymentDetail: String          # 詳細(1回5,500円など)
+
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
