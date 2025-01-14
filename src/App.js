@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 
-/**
- * すいな法乳房ケア カルテのレイアウトを <table> で再現する例
- */
+
 function App() {
   const [formData, setFormData] = useState({
     no: '',
